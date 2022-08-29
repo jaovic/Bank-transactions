@@ -9,10 +9,13 @@ async function bootstrap() {
     options: {
       client: {
         brokers: ['localhost:9092'],
+        consumer: {
+          groupId: 'getway-consumer',
+        },
       },
     },
   });
   await app.startAllMicroservices();
-  await app.listen(3003);
+  await app.listen(3006);
 }
 bootstrap();

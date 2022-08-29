@@ -1,23 +1,21 @@
 import { UserService } from './user.service';
 import { Controller, Inject } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { KafkaMessage, Producer } from 'kafkajs';
+import { ClientKafka, EventPattern, Payload } from '@nestjs/microservices';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    @Inject('KAFKA_PRODUCER')
-    private kafkaProducer: Producer,
+    @Inject('AUTH_SERVICE') private readonly authClient: ClientKafka,
   ) {}
 
-  @MessagePattern('newClients')
-  async getClient(body: any) {
-    console.log(body);
+  @EventPattern('newClients')
+  async getClient(@Payload() message: any): Promise<any> {
+    console.log(message);
   }
 
-  @MessagePattern('pagamentos')
-  async getPayments(@Payload() message: KafkaMessage): Promise<any> {
-    console.log(message.value);
+  @EventPattern('pagamentos')
+  async getPayments(@Payload() message: any): Promise<any> {
+    console.log(message.body.value);
   }
 }

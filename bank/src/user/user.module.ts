@@ -2,38 +2,27 @@ import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { ClientKafka, ClientsModule, Transport } from '@nestjs/microservices';
-import { Producer } from 'kafkajs';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'KAFKA_SERVICE',
+        name: 'AUTH_SERVICE',
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'bank',
+            clientId: 'auth',
             brokers: ['localhost:9092'],
           },
           consumer: {
-            groupId: 'bank-consumer',
+            groupId: 'auth-consumer',
           },
         },
       },
     ]),
   ],
-  providers: [
-    UserService,
-    JwtStrategy,
-    {
-      provide: 'KAFKA_PRODUCER',
-      useFactory: async (kafkaService: ClientKafka): Promise<Producer> => {
-        return kafkaService.connect();
-      },
-      inject: ['KAFKA_SERVICE'],
-    },
-  ],
+  providers: [UserService, JwtStrategy],
   controllers: [UserController],
 })
 export class UserModule {}
