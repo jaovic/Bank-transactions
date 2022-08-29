@@ -13,11 +13,11 @@ import { Producer } from 'kafkajs';
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'hero',
+            clientId: 'bank',
             brokers: ['localhost:9092'],
           },
           consumer: {
-            groupId: 'hero-consumer',
+            groupId: 'bank-consumer',
           },
         },
       },
