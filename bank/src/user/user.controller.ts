@@ -1,6 +1,9 @@
 import { UserService } from './user.service';
 import { Controller, Inject } from '@nestjs/common';
 import { ClientKafka, EventPattern, Payload } from '@nestjs/microservices';
+import { newClientDto } from './dto/new.client.dto';
+import { tedPaymentoDto } from './dto/ted.payment.dto';
+import { depositDto } from './dto/deposit.dto';
 
 @Controller('user')
 export class UserController {
@@ -10,12 +13,17 @@ export class UserController {
   ) {}
 
   @EventPattern('newClients')
-  async getClient(@Payload() message: any): Promise<any> {
-    console.log(message);
+  async getClient(@Payload() message: newClientDto): Promise<any> {
+    await this.userService.getClient(message);
   }
 
   @EventPattern('pagamentos')
-  async getPayments(@Payload() message: any): Promise<any> {
-    console.log(message.body.value);
+  async getPayments(@Payload() message: tedPaymentoDto): Promise<any> {
+    await this.userService.getPayments(message);
+  }
+
+  @EventPattern('depositos')
+  async deposit(@Payload() message: depositDto): Promise<any> {
+    await this.userService.deposit(message);
   }
 }
