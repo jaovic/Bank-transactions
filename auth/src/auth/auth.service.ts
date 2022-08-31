@@ -29,6 +29,7 @@ export class AuthService {
     const data = await this.repositoryService.create(createAuthDto);
     await this.repositoryService.saveCode(data.id, code.toString());
     await this.smsService.sendSms(createAuthDto.phone, code.toString());
+    delete data.isVerified;
     this.kafkaService.emit('newClients', data);
 
     return data;
