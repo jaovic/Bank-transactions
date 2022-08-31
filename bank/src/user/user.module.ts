@@ -1,3 +1,4 @@
+import { RepositoryService } from './../repository/repository.service';
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
@@ -22,7 +23,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     ]),
   ],
-  providers: [UserService, JwtStrategy],
+  providers: [UserService, JwtStrategy, RepositoryService],
   controllers: [UserController],
 })
 export class UserModule {}
