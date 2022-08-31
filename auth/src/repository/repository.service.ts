@@ -23,7 +23,9 @@ export class RepositoryService {
       delete user.password &&
         delete user.token &&
         delete user.Refresh_Token &&
-        delete user.codeSms;
+        delete user.codeSms &&
+        delete user.updatedAt &&
+        delete user.createdAt;
       return user;
     } catch (error: any) {
       throw new Error(error);
