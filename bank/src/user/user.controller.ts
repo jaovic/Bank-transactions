@@ -1,27 +1,29 @@
 import { UserService } from './user.service';
-import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { KafkaMessage, Producer } from 'kafkajs';
+import { Controller, Inject } from '@nestjs/common';
+import { ClientKafka, EventPattern, Payload } from '@nestjs/microservices';
+import { newClientDto } from './dto/new.client.dto';
+import { tedPaymentoDto } from './dto/ted.payment.dto';
+import { depositDto } from './dto/deposit.dto';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    @Inject('KAFKA_PRODUCER')
-    private kafkaProducer: Producer,
+    @Inject('AUTH_SERVICE') private readonly authClient: ClientKafka,
   ) {}
-  // @UseGuards(AuthGuard('jwt'))
-  @Get('balance')
-  async getBalance() {
-    this.kafkaProducer.send({
-      topic: 'pagamentos',
-      messages: [{ key: 'pagamentos', value: 'teste' }],
-    });
-    return true;
+
+  @EventPattern('newClients')
+  async getClient(@Payload() message: newClientDto): Promise<any> {
+    await this.userService.getClient(message);
   }
-  @MessagePattern('pagamentos')
-  async getClients(@Payload() message: KafkaMessage): Promise<any> {
-    console.log(message.value);
+
+  @EventPattern('pagamentos')
+  async getPayments(@Payload() message: tedPaymentoDto): Promise<any> {
+    await this.userService.getPayments(message);
+  }
+
+  @EventPattern('depositos')
+  async deposit(@Payload() message: depositDto): Promise<any> {
+    await this.userService.deposit(message);
   }
 }

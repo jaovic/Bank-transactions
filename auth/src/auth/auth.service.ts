@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SingUpAuthDto } from './dto/singup-auth.dto';
 import { RepositoryService } from 'src/repository/repository.service';
 import { SmsService } from './../sms/sms.service';
 
 import * as bcrypt from 'bcrypt';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +13,7 @@ export class AuthService {
     private readonly repositoryService: RepositoryService,
     private readonly jwtService: JwtService,
     private readonly smsService: SmsService,
+    @Inject('AUTH_SERVICE') private readonly kafkaService: ClientKafka,
   ) {}
 
   async create(createAuthDto: SingUpAuthDto) {
@@ -27,6 +29,8 @@ export class AuthService {
     const data = await this.repositoryService.create(createAuthDto);
     await this.repositoryService.saveCode(data.id, code.toString());
     await this.smsService.sendSms(createAuthDto.phone, code.toString());
+    delete data.isVerified;
+    this.kafkaService.emit('newClients', data);
 
     return data;
   }
