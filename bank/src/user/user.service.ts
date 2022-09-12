@@ -18,6 +18,8 @@ export class UserService {
 
   async deposit(body: depositDto) {
     const { AccountId, value } = body.body;
-    return await this.repository.saveDeposit(AccountId, value);
+    const data = await this.repository.findByAccountId(AccountId);
+    const newValue = data.balance + value;
+    return await this.repository.saveDeposit(AccountId, newValue);
   }
 }
