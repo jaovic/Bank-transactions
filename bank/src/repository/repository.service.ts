@@ -52,4 +52,15 @@ export class RepositoryService {
       throw new Error(`Prisma Error: ${error}`);
     }
   }
+
+  async saveDeposit(accountId: string, value: number) {
+    try {
+      return await prisma.user.updateMany({
+        where: { accountId },
+        data: { balance: value },
+      });
+    } catch (error) {
+      throw new Error(`Prisma Error: ${error}`);
+    }
+  }
 }

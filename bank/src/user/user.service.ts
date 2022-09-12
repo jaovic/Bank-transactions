@@ -13,14 +13,11 @@ export class UserService {
   }
 
   async getPayments(body: tedPaymentoDto) {
-    console.log(body.body.payerAccountId);
-    const data = await this.repository.findByAccountId(
-      body.body.payerAccountId,
-    );
-    console.log(data);
+    return await this.repository.findByAccountId(body.body.payerAccountId);
   }
 
   async deposit(body: depositDto) {
-    console.log(body.body);
+    const { AccountId, value } = body.body;
+    return await this.repository.saveDeposit(AccountId, value);
   }
 }
