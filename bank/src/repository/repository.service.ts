@@ -53,10 +53,10 @@ export class RepositoryService {
     }
   }
 
-  async saveDeposit(id: string, value: number) {
+  async saveDeposit(accountId: string, value: number) {
     try {
       return await prisma.user.updateMany({
-        where: { id },
+        where: { accountId },
         data: { balance: value },
       });
     } catch (error) {
