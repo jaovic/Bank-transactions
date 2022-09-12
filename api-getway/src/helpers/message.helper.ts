@@ -19,4 +19,9 @@ export const MessagesHelper = {
 
   ECEIVINGBANK_REQUIRED: 'receivingBank is required',
   ECEIVINGBANK_INVALID: 'receivingBank is invalid',
+
+  ACCOUNT_ID_REQUIRED: 'AccountId is required',
+  ACCOUNT_ID_INVALID: 'AccountId is invalid',
+
+  AGENCY_REQUIRED: 'agency is required',
 };
