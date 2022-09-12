@@ -17,8 +17,7 @@ export class UserService {
   }
 
   async deposit(body: depositDto) {
-    const id = body.body.AccountId;
-    const { value } = body.body;
-    return await this.repository.saveDeposit(id, value);
+    const { AccountId, value } = body.body;
+    return await this.repository.saveDeposit(AccountId, value);
   }
 }
